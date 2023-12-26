@@ -1,0 +1,810 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap");
+
+$font-family: "Poppins", Helvetica, Arial, sans-serif;
+$font-size: 16px;
+$background: #16151a;
+$background-light: #25232f;
+$text-light: #fff;
+$text-dark: #16151a;
+
+$box-shadow: 0.063rem 0.375rem 0.25rem 0 rgba(0, 0, 0, 0.5);
+$box-shadow-hover: 0.063rem 0.5rem 0.25rem 0 rgba(0, 0, 0, 0.6);
+$box-shadow-active: inset 0 0.125rem 0.125rem 0.125rem rgba(0, 0, 0, 0.83);
+
+$btn-height: 3.25rem;
+
+$btn-types: (
+  // primary: (#586CEB, #7c8cff, #3e4b9b), //default,hover,active
+  primary: (#586ceb, #6b79f4, #5665eb),
+  //default,hover,active
+  secondary: (#894bc6, #a458eb, rgba(164, 88, 235, 0.85)),
+  number: (#1b1a22, rgba(31, 30, 37, 0.8), rgba(31, 30, 37, 0.9)),
+  operation: (#1a1b2b, rgba(30, 31, 52, 0.8), rgba(30, 31, 52, 0.9)),
+  list: (#1a1b2b, rgba(30, 31, 52, 0.8), #151624)
+);
+
+$primary-color: nth(map-get($btn-types, primary), 1);
+$secondary-color: nth(map-get($btn-types, secondary), 1);
+
+@each $key, $type in $btn-types {
+  @each $color in $type {
+    $i: index($type, $color);
+    @if ($i % 3 == 1) {
+      .btn-#{$key} {
+        background-color: $color;
+      }
+    } @else if $i % 3 == 2 {
+      .btn-#{$key}:hover {
+        background-color: $color;
+      }
+    } @else if $i % 3 == 0 {
+      .btn-#{$key}:active,
+      .btn-#{$key}.active {
+        background-color: $color;
+      }
+    }
+  }
+}
+
+@mixin user-select-none {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+@mixin box-shadow($args...) {
+  -webkit-box-shadow: $args;
+  -moz-box-shadow: $args;
+  -ms-box-shadow: $args;
+  box-shadow: $args;
+}
+
+@mixin box-shadow-type($type) {
+  @if $type == "default" {
+    @include box-shadow($box-shadow...);
+  } @else if $type == "hover" {
+    @include box-shadow($box-shadow-hover...);
+  } @else if $type == "active" {
+    @include box-shadow($box-shadow-active...);
+  }
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0;
+  background-color: $background;
+  color: $text-light;
+  font-size: $font-size;
+  letter-spacing: 0.025rem;
+  font-family: $font-family;
+}
+
+body:has(dialog[open]) {
+  overflow-y: hidden;
+}
+
+*:focus-visible {
+  border: none;
+  outline: none;
+}
+
+::selection {
+  background-color: $primary-color;
+  color: $text-light;
+}
+
+p {
+  font-size: 1em;
+  line-height: 1.625em;
+  font-weight: 300;
+  margin: 1.5em 0 0.5em 0;
+}
+
+var {
+  position: absolute;
+  opacity: 0;
+}
+
+a {
+  color: $text-light;
+  text-decoration: none;
+  // color: #A2A2A2;
+  border-bottom: 0px solid #ffffff;
+  transition: color 0.2s linear;
+
+  &:hover {
+    color: #fff;
+    // border-bottom: 1px solid #ffffff;
+  }
+}
+
+input[type="radio"] {
+  position: absolute;
+  left: -9999px;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  box-sizing: border-box;
+  transform: scale(1);
+  width: 100%;
+  height: 100%;
+  margin: auto;
+  padding: 2em;
+
+  .wrapper {
+    max-width: 41.5rem;
+    min-width: 15.875rem;
+    margin: auto;
+  }
+
+  h1 {
+    font-size: 2em;
+    line-height: 2.5rem;
+    margin: 0.5em 0;
+    font-weight: 600;
+
+    span {
+      color: $primary-color;
+    }
+  }
+}
+
+.screen {
+  font-weight: 600;
+  padding: 2.5em 0 1.125em 0;
+
+  .detail {
+    font-size: 1.125em;
+    line-height: 1.5rem;
+    padding-bottom: 0.25em;
+    color: rgba(255, 255, 255, 0.82);
+
+    span {
+      color: rgba(255, 255, 255, 0.48);
+    }
+  }
+
+  .result {
+    display: flex;
+    line-height: 2.875rem;
+    color: #ffffff;
+    overflow-wrap: anywhere;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 2em;
+
+    .fa-solid {
+      width: auto;
+      min-width: 1.75rem;
+      margin: 0.475rem 1.25rem 0 1.25rem;
+    }
+
+    .fa-delete-left {
+      opacity: 0;
+      align-self: flex-start;
+      font-size: 1.75rem;
+      color: $primary-color;
+      text-shadow: 0 0 0 #3047d8, 0 0 0.5rem $background;
+      animation-timing-function: ease;
+      animation-name: delIcon;
+      animation-duration: 0.4s;
+    }
+  }
+}
+
+.container {
+  @include user-select-none;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, auto);
+  gap: 1em;
+
+  button {
+    @include box-shadow-type(default);
+    cursor: pointer;
+    height: $btn-height;
+    border-radius: $btn-height / 2;
+    font-family: $font-family;
+    font-size: 1.5em;
+    line-height: 2em;
+    font-weight: 600;
+    transition: all 0.2s;
+    border: none;
+    color: $text-light;
+    padding: 0;
+
+    span {
+      display: flex;
+      width: $btn-height;
+      height: 100%;
+      justify-content: center;
+      align-items: center;
+      margin: auto;
+
+      i {
+        font-size: 1.25rem;
+      }
+    }
+
+    &:hover {
+      @include box-shadow-type(hover);
+    }
+
+    &:active,
+    &.active {
+      @include box-shadow-type(active);
+    }
+  }
+
+  [value="0"] {
+    grid-column: 1 / span 2;
+  }
+
+  [value=","],
+  [value="="] {
+    grid-column: span 1;
+  }
+
+  [value="C"] {
+    color: $text-dark;
+  }
+}
+
+dialog {
+  &[open] {
+    pointer-events: inherit;
+    animation: fadeIn 0.3s ease normal;
+
+    position: fixed;
+    z-index: 9;
+    font-size: 0.875em;
+    font-family: $font-family;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    // overflow-y: auto;
+    color: $text-light;
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    backdrop-filter: blur(0.813em) saturate(148%);
+    background-color: rgba(0, 0, 0, 0.15);
+    cursor: default;
+
+    h3 {
+      margin: 1.5rem 0 2rem 0;
+      font-family: $font-family;
+      font-weight: 600;
+      font-size: 1.5rem;
+      color: $text-light;
+
+      span {
+        color: $primary-color;
+      }
+    }
+
+    article {
+      position: relative;
+      animation: fromBottom 0.5s ease normal;
+      overflow-y: auto;
+      max-width: 33.5rem;
+      width: auto;
+      padding: 1rem 2.5rem;
+      margin: 1rem;
+      background-color: $background-light;
+      border-radius: 0.875rem;
+
+      & > div {
+        overflow-y: auto;
+        max-height: calc(100vh - 18rem);
+
+        p:first-of-type {
+          margin-top: 0;
+        }
+      }
+    }
+
+    p + p,
+    b + p {
+      margin-top: 0.5rem;
+      margin-bottom: 0.25rem;
+    }
+    .example {
+      & > div:first-of-type {
+        margin: 2.25rem 0;
+      }
+      .accordion {
+        font-weight: 300;
+        background-color: #2e2a46;
+        border-radius: 0.875rem;
+        padding: 2rem 2rem;
+        margin: 0.75rem 0;
+        overflow-y: hidden;
+        max-height: 1.125rem;
+        transition: max-height 0.3s ease-in-out;
+
+        .top {
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: flex-start;
+          padding: 1.125rem;
+          margin: -1.125rem -1.125rem 2rem -1.125rem;
+
+          .icon {
+            display: flex;
+            position: relative;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(88, 108, 235, 0.3);
+            color: #fff;
+            width: 1.125rem;
+            height: 1.125rem;
+            padding: 0.25rem;
+            margin: -0.25rem -0.25rem -0.25rem 0.7rem;
+            font-size: 1.125em;
+            border-radius: 2rem;
+            transition: background-color 0.5s ease;
+
+            i {
+              position: absolute;
+
+              &.fa-minus {
+                opacity: 0;
+              }
+
+              &.fa-plus {
+                opacity: 1;
+              }
+            }
+          }
+        }
+
+        &.open a {
+          .icon {
+            background-color: rgba(92, 39, 144, 0.83);
+            color: #fff;
+            transition: background-color 0.5s ease;
+
+            i {
+              position: absolute;
+
+              &.fa-minus {
+                opacity: 1;
+              }
+
+              &.fa-plus {
+                opacity: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+    button {
+      cursor: pointer;
+      font-family: $font-family;
+      font-size: 1rem;
+      font-weight: 600;
+      margin: 1.5rem 0;
+      width: 100%;
+      height: 3.25rem;
+      border: none;
+      border-radius: 0.875rem;
+      background-color: $primary-color;
+      color: $text-dark;
+    }
+  }
+}
+
+.bottom-section {
+  display: flex;
+  flex-direction: column-reverse;
+
+  h5 {
+    z-index: 2;
+    opacity: 1;
+    transition: all 0.3s ease-in-out;
+    color: #a2a2a2;
+    font-family: $font-family;
+    font-weight: 300;
+    font-size: 1em;
+    margin-top: 4rem;
+    margin-bottom: 1rem;
+    text-align: center;
+
+    a {
+      position: relative;
+      font-weight: 600;
+      font-size: 1rem;
+      color: #a2a2a2;
+      border-bottom: 0px solid #ffffff;
+      transition: color 0.2s linear;
+      &:hover {
+        color: #fff;
+      }
+      &:hover::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -0.125rem;
+        width: 100%;
+        border-bottom: 0.063rem solid #ffffff;
+      }
+    }
+  }
+
+  // .list:has(.list-choice-container:hover) + h5,
+  .list.open + h5 {
+    z-index: 1;
+    transition: all 0.2s;
+    opacity: 0;
+  }
+
+  .list {
+    z-index: 2;
+    position: relative;
+    bottom: 4rem;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: -moz-none;
+    -o-user-select: none;
+    user-select: none;
+
+    display: flex;
+    margin: 0 auto;
+    margin-bottom: -4.5rem;
+    padding: 0px;
+    width: fit-content;
+    flex-direction: column;
+    align-items: center;
+
+    a {
+      position: relative;
+      opacity: 0;
+      font-weight: 300;
+      font-size: 0.875rem;
+      color: #a2a2a2;
+      border-bottom: 0px solid #ffffff;
+      transition: color 0.2s linear;
+      &:hover {
+        color: #fff;
+      }
+      &:hover::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -0.125rem;
+        width: 100%;
+        border-bottom: 0.063rem solid #ffffff;
+      }
+    }
+
+    & > div,
+    & > button {
+      z-index: 1;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      border-radius: 0.875rem;
+
+      label {
+        cursor: pointer;
+        padding: 1rem 1.5rem;
+        font-weight: 300;
+        font-size: 0.875rem;
+        color: #a2a2a2;
+
+        &:first-of-type {
+          border-bottom: 0.125rem solid $background;
+        }
+
+        span {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          i {
+            opacity: 0;
+            font-size: 1.2rem;
+            transition: all 0.2s ease;
+          }
+        }
+        input:checked ~ span {
+          color: #fff;
+          i {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    .list-choice-container {
+      align-items: center;
+
+      .list-choice {
+        display: -webkit-box;
+        display: -moz-box;
+        display: -ms-flexbox;
+        display: -moz-flex;
+        display: -webkit-flex;
+        width: 4.313rem;
+        min-width: 0px;
+        overflow: hidden;
+        flex-direction: row;
+        justify-content: flex-end;
+
+        white-space: nowrap;
+        border-radius: 0.875rem;
+
+        margin: 0.75rem 0px 0.75rem 0px;
+        padding: 1.25rem 1.5rem;
+        font-size: 1.125rem;
+        line-height: 1.563rem;
+        font-weight: 600;
+
+        @include box-shadow-type(default);
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        color: $text-light;
+
+        &:hover {
+          @include box-shadow-type(hover);
+          width: 100%;
+          transition: all 0.3s ease-in-out;
+
+          & + a {
+            opacity: 1;
+          }
+        }
+
+        &:active,
+        &.active {
+          @include box-shadow-type(active);
+        }
+
+        i {
+          color: $primary-color;
+          font-size: 1.5rem;
+          margin-left: 1.5rem;
+        }
+      }
+
+      &:hover {
+        .list-choice {
+          width: 100%;
+          & + a {
+            opacity: 1;
+          }
+        }
+        .sound-container {
+          opacity: 1;
+          right: -4rem;
+
+          &:hover {
+            color: #fff;
+
+            &::after {
+              content: "";
+              border-bottom: 0px;
+            }
+          }
+        }
+      }
+
+      .sound-container {
+        opacity: 0;
+        position: absolute;
+        display: flex;
+        right: 0;
+        margin: 0.75rem 0 0.75rem 1.5rem;
+        padding: 1.125rem 1rem 1.125rem 1rem;
+        bottom: 1.575rem;
+        color: #a2a2a2;
+        font-size: 1.25rem;
+        transition: all 0.2s;
+        cursor: pointer;
+        min-width: 2rem;
+        text-align: left;
+
+        &.sound-off {
+          i.fa-volume-xmark {
+            opacity: 1;
+          }
+          i.fa-volume-high {
+            opacity: 0;
+          }
+        }
+        &.sound-on {
+          i.fa-volume-xmark {
+            opacity: 0;
+          }
+          i.fa-volume-high {
+            opacity: 1;
+          }
+        }
+      }
+    }
+
+    .list-items {
+      z-index: 0;
+      position: relative;
+      opacity: 0;
+      top: 4.75rem;
+      background: #1b1a22;
+      box-shadow: inset 0 0.063rem 0.313rem 0.125rem rgba(0, 0, 0, 0.5);
+      border-radius: 0.875rem;
+      transition: all 0.3s ease-in-out;
+    }
+
+    &.open {
+      a {
+        opacity: 1;
+      }
+      .list-items {
+        opacity: 1;
+        top: 0;
+      }
+      .list-choice {
+        width: 100%;
+        min-width: 17.125rem;
+        transition: all 0.3s ease-in-out;
+        @include box-shadow-type(active);
+
+        &:hover {
+          @include box-shadow-type(active);
+        }
+      }
+      .sound-container {
+        opacity: 1;
+        right: -4rem;
+
+        &:hover {
+          color: #fff;
+        }
+      }
+    }
+  }
+}
+
+@keyframes delIcon {
+  0% {
+    opacity: 0;
+    text-shadow: 0 0 0 #3047d8, 0 0 0.5rem $background;
+  }
+  0% {
+    opacity: 0.5;
+    text-shadow: 0 0 0 #3047d8, 0 0 0.5rem $background;
+  }
+  20% {
+    opacity: 1;
+    text-shadow: 0 0 1.25rem #3047d8, 0 0 0.5rem $background;
+  }
+  50% {
+    opacity: 1;
+    text-shadow: 0 0 0 #3047d8, 0 0 0.5rem $background;
+  }
+  100% {
+    opacity: 0;
+    text-shadow: 0 0 0 #3047d8, 0 0 0.5rem $background;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fromBottom {
+  from {
+    bottom: -5em;
+  }
+  to {
+    bottom: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  html,
+  body {
+    font-size: 15px;
+  }
+  article {
+    max-width: 100% !important;
+    margin: 0px !important;
+    height: 100%;
+    width: 100%;
+    border-radius: 0 !important;
+
+    & > div {
+      max-height: 100% !important;
+      overflow-y: hidden !important;
+    }
+
+    button {
+      margin-bottom: 3.5rem !important;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  html,
+  body {
+    font-size: 14px;
+  }
+}
+
+.github-corner {
+  fill: #586ceb;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  border: 0;
+  right: 0;
+  z-index: 999;
+  transition: all 560ms ease;
+  transform-origin: top right;
+  & .octo-arm {
+    transform-origin: center;
+  }
+  & .octo-body {
+    transition: scale 0.5s ease;
+    transform-origin: center;
+  }
+  &:active {
+    scale: 0.9;
+    // transform-origin: top right;
+  }
+  &:hover {
+    fill: #894bc6;
+    color: #fff;
+    & .octo-body {
+      scale: 1.1;
+    }
+    & .octo-arm {
+      animation: octocat-wave 560ms ease-in-out;
+    }
+  }
+}
+
+@keyframes octocat-wave {
+  0%,
+  100% {
+    transform: rotate(0);
+  }
+  20%,
+  60% {
+    transform: rotate(-25deg);
+  }
+  40%,
+  80% {
+    transform: rotate(10deg);
+  }
+}
+
+@media (max-width: 500px) {
+  .github-corner:hover .octo-arm {
+    animation: none;
+  }
+  .github-corner .octo-arm {
+    animation: octocat-wave 560ms ease-in-out;
+  }
+}
